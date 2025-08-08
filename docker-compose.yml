@@ -11,7 +11,9 @@ services:
       - ${WATCHDOG_APPSETTINGS_PATH}:/app/appsettings.yml:ro
     ports:
       # External proxy port (HTTPS via Traefik)
-      - ${EXTERNAL_PORT}:${INTERNAL_PORT}/tcp
+      - "${EXTERNAL_PORT}:${INTERNAL_PORT}/tcp"
+      # PostgreSQL database port for inter-container communication on ps-ss14 network
+      - "${POSTGRES_PORT}:${POSTGRES_PORT}/tcp"
     environment:
       # Override Docker-specific environment variables
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}

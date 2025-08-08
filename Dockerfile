@@ -50,6 +50,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     net-tools \
     iputils-ping \
     ca-certificates \
+    postgresql-client \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /tmp/* \
@@ -69,20 +70,23 @@ RUN mkdir -p /app/data /app/instances /app/logs /app/config \
 # RUN chown -R watchdog:watchdog /app
 # USER watchdog
 
-# Set environment variables for Linux optimization
+# Set environment variables for Linux optimization and .NET 9 compatibility
 ENV DOTNET_RUNNING_IN_CONTAINER=true
 ENV DOTNET_USE_POLLING_FILE_WATCHER=true
 ENV ASPNETCORE_ENVIRONMENT=Production
-ENV ASPNETCORE_URLS=http://+:5000
+ENV ASPNETCORE_URLS=http://0.0.0.0:5000
+ENV DOTNET_EnableDiagnostics=0
 
 # Expose the ports the app runs on
 # Port 5000: Internal server-to-watchdog communication (HTTP)
 # Port 5001: External proxy communication (HTTPS via Traefik)
 # Port 1212: SS14 game server API communication (TCP/UDP)
+# Port 5432: PostgreSQL database for inter-container communication
 EXPOSE 5000/tcp
 EXPOSE 5001/tcp
 EXPOSE 1212/tcp
 EXPOSE 1212/udp
+EXPOSE 5432/tcp
 
 # Add health check for container orchestration
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
