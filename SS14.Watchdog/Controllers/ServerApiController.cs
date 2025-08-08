@@ -53,7 +53,7 @@ namespace SS14.Watchdog.Controllers
             if (!AuthorizationUtility.TryParseBasicAuthentication(authorization, out failure, out var authKey,
                 out var token))
             {
-                _logger.LogWarning("Failed to parse Basic authentication for key {Key}", key);
+                _logger.LogWarning("Failed to parse Basic authentication from Authorization header for server API request (key: {Key})", key);
                 return false;
             }
 
