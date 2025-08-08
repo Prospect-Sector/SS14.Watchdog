@@ -86,7 +86,6 @@ EXPOSE 5000/tcp
 EXPOSE 5001/tcp
 EXPOSE 1212/tcp
 EXPOSE 1212/udp
-EXPOSE 5432/tcp
 
 # Add health check for container orchestration
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
