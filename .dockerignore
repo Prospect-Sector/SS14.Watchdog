@@ -1,0 +1,57 @@
+# Ignore .git directory
+.git
+.gitignore
+
+# Ignore Visual Studio files
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Ignore build outputs from local development
+**/bin/
+**/obj/
+**/out/
+
+# Ignore NuGet packages directory
+packages/
+*.nupkg
+
+# Ignore local development files
+.env
+appsettings.Secret.yml
+data.db*
+
+# Ignore local NuGet cache (but allow the clean NuGet.config we created)
+.nuget/
+nuget.exe
+
+# Ignore temporary files
+*.tmp
+*.temp
+*.log
+
+# Ignore IDE specific files
+.vscode/
+.idea/
+
+# Ignore OS specific files
+.DS_Store
+Thumbs.db
+
+# Ignore documentation and non-essential files
+README.md
+LICENSE*
+SECURITY.md
+.editorconfig
+.envrc
+
+# Ignore example and configuration files that aren't needed for build
+.env.example
+app.env
+appsettings.env
+docker-compose.yml
+
+# Keep files needed for Docker build
+!NuGet.config

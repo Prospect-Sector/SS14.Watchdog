@@ -184,7 +184,7 @@ namespace SS14.Watchdog.Components.ServerManagement
         {
             // Prefer http:// and localhost URLs, in case multiple are bound.
             // In the future, we will probably want to support Unix sockets.
-            return _server.Features.Get<IServerAddressesFeature>()!.Addresses
+            var addresses = _server.Features.Get<IServerAddressesFeature>()!.Addresses
                 .Select(x => new { Address = x, Uri = new Uri(x) })
                 .OrderBy(x => x.Uri.Scheme switch
                 {
@@ -194,10 +194,25 @@ namespace SS14.Watchdog.Components.ServerManagement
                 .ThenBy(x => x.Uri.Host switch
                 {
                     "localhost" => 1,
-                    _ => 2
+                    "127.0.0.1" => 2,
+                    _ => 3
                 })
-                .Select(x => x.Address)
-                .First();
+                .ToList();
+
+            var bestAddress = addresses.First();
+            
+            // If the best address is a bind-all address (0.0.0.0), convert it to localhost
+            // for internal communication since game servers need a specific address to connect to
+            if (bestAddress.Uri.Host == "0.0.0.0")
+            {
+                var uriBuilder = new UriBuilder(bestAddress.Uri)
+                {
+                    Host = "localhost"
+                };
+                return uriBuilder.ToString();
+            }
+
+            return bestAddress.Address;
         }
     }
 }

@@ -23,7 +23,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Update="appsettings.yml">
+      <None Update="appsettings.yml.example">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
         <Content Remove="Utility\runtime.json" />
