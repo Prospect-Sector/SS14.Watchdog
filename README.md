@@ -17,7 +17,7 @@ This Docker setup properly replicates the systemctl service functionality by run
 
 1. **Clone the repository:**
 ```bash
-git clone https://github.com/dvir001/SS14.Watchdog.git
+git clone https://github.com/SS14/SS14.Watchdog.git
 cd SS14.Watchdog
 ```
 
