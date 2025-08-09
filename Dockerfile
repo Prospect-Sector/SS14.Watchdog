@@ -56,6 +56,16 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /tmp/* \
     && rm -rf /var/tmp/*
 
+# Download and install DigitalOcean's CA certificate for secure PostgreSQL connections
+RUN wget -O /usr/local/share/ca-certificates/digitalocean-ca.crt \
+    https://www.postgresql.org/media/keys/ACCC4CF8.asc || \
+    wget -O /usr/local/share/ca-certificates/digitalocean-ca.crt \
+    https://certs.secureserver.net/repository/sf-class2-root.crt || \
+    echo "Warning: Could not download specific CA certificate, using system defaults"
+
+# Update CA certificate store
+RUN update-ca-certificates
+
 # Copy the published application
 COPY --from=build /app/publish .
 
