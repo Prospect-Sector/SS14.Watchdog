@@ -16,12 +16,5 @@ namespace SS14.Watchdog.Controllers
 ####
 ");
         }
-
-        [HttpGet("health")]
-        [HttpGet("/health")]  // Also respond to /health for Docker health checks
-        public IActionResult Health()
-        {
-            return Ok(new { status = "healthy", timestamp = System.DateTime.UtcNow });
-        }
     }
 }
