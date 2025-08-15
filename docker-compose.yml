@@ -2,40 +2,25 @@ services:
   ps-ss14-watchdog:
     build: .
     container_name: ${WATCHDOG_CONTAINER_NAME}
-    # Human-readable name for easier identification
     hostname: PS-SS14-Watchdog
     volumes:
-      # Map the instances directory - this contains all server instances
       - ${WATCHDOG_INSTANCES_PATH}:/app/instances
-      # Map the appsettings.yml file from host to container
       - ${WATCHDOG_APPSETTINGS_PATH}:/app/appsettings.yml:ro
-    ports:
-      # External proxy port (HTTPS via Traefik)
-      - "${EXTERNAL_PORT}:${INTERNAL_PORT}/tcp"
     environment:
-      # Override Docker-specific environment variables
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
       - ASPNETCORE_URLS=${ASPNETCORE_URLS}
     restart: unless-stopped
-    # Health check using internal port
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://127.0.0.1:${INTERNAL_PORT}/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
     networks:
       - ${INTERNAL_NETWORK}
       - ${EXTERNAL_NETWORK}
     labels:
-      # Traefik configuration using environment variables
       - "traefik.enable=true"
       - "traefik.http.routers.ps-ss14-watchdog.tls.certresolver=${TRAEFIK_CERT_RESOLVER}"
       - "traefik.http.routers.ps-ss14-watchdog.rule=Host(`${TRAEFIK_DOMAIN}`)"
       - "traefik.http.routers.ps-ss14-watchdog.entrypoints=${TRAEFIK_ENTRYPOINT}"
       - "traefik.http.routers.ps-ss14-watchdog.tls=true"
       - "traefik.http.routers.ps-ss14-watchdog.middlewares=${TRAEFIK_MIDDLEWARE}"
-      - "traefik.http.services.ps-ss14-watchdog.loadbalancer.server.port=${INTERNAL_PORT}"
+      - "traefik.http.services.ps-ss14-watchdog.loadbalancer.server.port=${PORT}"
       - "traefik.docker.network=${EXTERNAL_NETWORK}"
 
 networks:
