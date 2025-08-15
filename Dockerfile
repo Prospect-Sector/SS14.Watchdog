@@ -30,13 +30,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Set working directory and create required directories with proper permissions
+# Set working directory and create required directories
 WORKDIR /app
-RUN mkdir -p data instances logs config && \
-    chmod -R 775 /app
+RUN mkdir -p data instances logs config
 
 # Copy published application
-COPY --from=build --chown=watchdog:watchdog /app/publish ./
+COPY --from=build /app/publish ./
 
 # Expose ports
 EXPOSE 8080/tcp
