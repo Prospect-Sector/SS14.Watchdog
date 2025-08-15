@@ -11,18 +11,28 @@ services:
       - "${API_PORT}:${API_PORT}/udp"
     environment:
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      - ASPNETCORE_URLS=${ASPNETCORE_URLS}
     restart: unless-stopped
     networks:
       - internal
       - external
     labels:
       - "traefik.enable=true"
+      # Watchdog web interface
       - "traefik.http.routers.${WATCHDOG_CONTAINER_NAME}.tls.certresolver=${TRAEFIK_CERT_RESOLVER}"
       - "traefik.http.routers.${WATCHDOG_CONTAINER_NAME}.rule=Host(`${TRAEFIK_DOMAIN}`)"
       - "traefik.http.routers.${WATCHDOG_CONTAINER_NAME}.entrypoints=${TRAEFIK_ENTRYPOINT}"
       - "traefik.http.routers.${WATCHDOG_CONTAINER_NAME}.tls=true"
       - "traefik.http.routers.${WATCHDOG_CONTAINER_NAME}.middlewares=${TRAEFIK_MIDDLEWARE}"
+      - "traefik.http.routers.${WATCHDOG_CONTAINER_NAME}.service=${WATCHDOG_CONTAINER_NAME}"
       - "traefik.http.services.${WATCHDOG_CONTAINER_NAME}.loadbalancer.server.port=${PORT}"
+      # Game server status endpoint
+      - "traefik.http.routers.${WATCHDOG_CONTAINER_NAME}-game.tls.certresolver=${TRAEFIK_CERT_RESOLVER}"
+      - "traefik.http.routers.${WATCHDOG_CONTAINER_NAME}-game.rule=Host(`${GAME_DOMAIN}`)"
+      - "traefik.http.routers.${WATCHDOG_CONTAINER_NAME}-game.entrypoints=${TRAEFIK_ENTRYPOINT}"
+      - "traefik.http.routers.${WATCHDOG_CONTAINER_NAME}-game.tls=true"
+      - "traefik.http.routers.${WATCHDOG_CONTAINER_NAME}-game.service=${WATCHDOG_CONTAINER_NAME}-game"
+      - "traefik.http.services.${WATCHDOG_CONTAINER_NAME}-game.loadbalancer.server.port=${API_PORT}"
       - "traefik.docker.network=${EXTERNAL_NETWORK}"
 
 networks:
