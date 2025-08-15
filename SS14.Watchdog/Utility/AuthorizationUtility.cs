@@ -19,17 +19,16 @@ namespace SS14.Watchdog.Utility
                 return false;
             }
 
-            var decodedString = Base64Util.Utf8Base64ToString(authorization[6..]);
-            var colonIndex = decodedString.IndexOf(':');
+            var split = Base64Util.Utf8Base64ToString(authorization[6..]).Split(':');
 
-            if (colonIndex == -1)
+            if (split.Length != 2)
             {
                 failure = new BadRequestResult();
                 return false;
             }
 
-            username = decodedString[..colonIndex];
-            password = decodedString[(colonIndex + 1)..];
+            username = split[0];
+            password = split[1];
             failure = null;
             return true;
         }
