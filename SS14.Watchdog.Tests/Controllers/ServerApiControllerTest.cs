@@ -1,6 +1,5 @@
 using System;
 using System.Text;
-using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using SS14.Watchdog.Components.ServerManagement;
@@ -25,8 +24,7 @@ namespace SS14.Watchdog.Tests.Controllers
             var manager = new Mock<IServerManager>();
             manager.Setup(i => i.TryGetInstance(key, out instance)).Returns(true);
 
-            var logger = new Mock<ILogger<ServerApiController>>();
-            var controller = new ServerApiController(manager.Object, logger.Object);
+            var controller = new ServerApiController(manager.Object);
 
             var authCorrect = "Basic " + Convert.ToBase64String(Encoding.UTF8.GetBytes($"{key}:{secret}"));
             var authWrong = "Basic " + Convert.ToBase64String(Encoding.UTF8.GetBytes($"{key}:oof"));
@@ -48,8 +46,7 @@ namespace SS14.Watchdog.Tests.Controllers
         {
             // Arrange
             var manager = Mock.Of<IServerManager>();
-            var logger = new Mock<ILogger<ServerApiController>>();
-            var controller = new ServerApiController(manager, logger.Object);
+            var controller = new ServerApiController(manager);
 
             // Act
             var success = controller.TryAuthorize("Foobar", "honk", out var failure, out var instance);
