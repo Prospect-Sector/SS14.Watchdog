@@ -1,0 +1,107 @@
+# SS14 Watchdog Configuration Example
+# Copy this file to appsettings.yml and configure your values
+
+Serilog:
+  Using: [ "Serilog.Sinks.Console", "Serilog.Sinks.Loki" ]
+  MinimumLevel:
+    Default: Information
+    Override:
+      SS14: Debug
+      Microsoft: "Warning"
+      Microsoft.Hosting.Lifetime: "Information"
+      Microsoft.AspNetCore: Warning
+
+  WriteTo:
+    - Name: Console
+      Args:
+        OutputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3} {SourceContext}] {Message:lj}{NewLine}{Exception}"
+
+  # Optional: Configure Loki logging
+  #Loki:
+  #  Address: "http://localhost:3100"
+  #  Name: "SS14-Watchdog"
+
+# Discord Notifications (Optional)
+Notification:
+  # Replace with your Discord webhook URL if you want notifications
+  DiscordWebhook: "https://discord.com/api/webhooks/YOUR_WEBHOOK_ID/YOUR_WEBHOOK_TOKEN"
+
+# Process management configuration
+Process:
+  # Set to true to persist server processes (like systemctl)
+  PersistServers: true
+  # Use Basic mode in Docker (systemd mode won't work in containers)
+  Mode: "Basic"
+
+# Server instances configuration
+Servers:
+  # This maps to the volume mount at /app/instances
+  InstanceRoot: "instances/"
+  
+  Instances:
+    example-server:
+      Name: "Example SS14 Server"
+      # Generate a secure random API token (use tools like openssl rand -hex 32)
+      ApiToken: "REPLACE_WITH_SECURE_RANDOM_TOKEN"
+      ApiPort: 1212
+      UpdateType: "Manifest"
+      Updates:
+        # Replace with your SS14 build manifest URL
+        ManifestUrl: "https://your-cdn.com/manifest"
+      TimeoutSeconds: 90
+      # Additional arguments for the server process
+      Arguments: []
+      EnvironmentVariables:
+        # Database Configuration (PostgreSQL recommended)
+        ROBUST_CVAR_database__engine: "postgres"
+        ROBUST_CVAR_database__pg_username: "your_db_username"
+        ROBUST_CVAR_database__pg_password: "your_db_password"
+        # Use public database hostname (not private) for Docker containers
+        ROBUST_CVAR_database__pg_host: "your-database-host.com"
+        ROBUST_CVAR_database__pg_port: "5432"
+        ROBUST_CVAR_database__pg_database: "ss14"
+        ROBUST_CVAR_database__pg_sslmode: "Require"
+        ROBUST_CVAR_database__pg_trust_server_certificate: "true"
+        
+        # Discord Bot Configuration (Optional)
+        ROBUST_CVAR_discord__token: "YOUR_DISCORD_BOT_TOKEN"
+        ROBUST_CVAR_discord__guild_id: "YOUR_DISCORD_GUILD_ID"
+        ROBUST_CVAR_discord__prefix: "."
+        
+        # Authentication
+        ROBUST_CVAR_auth__mode: "1"
+        ROBUST_CVAR_console__loginlocal: "false"
+        ROBUST_CVAR_console__login_host_user: "admin"
+        
+        # Hub and Status Configuration
+        ROBUST_CVAR_hub__advertise: "true"
+        ROBUST_CVAR_status__enabled: "true"
+        
+        # Logging
+        ROBUST_CVAR_log__path: "logs"
+        ROBUST_CVAR_log__format: "log_%(date)s-%(time)s.txt"
+        ROBUST_CVAR_log__level: "1"
+        ROBUST_CVAR_log__enabled: "true"
+        
+        # Server Configuration
+        ROBUST_CVAR_config__presets: "your-preset-name"
+        ROBUST_CVAR_net__port: "1212"
+        ROBUST_CVAR_status__bind: "*:1212"
+        # Use your actual server domain for external connections
+        ROBUST_CVAR_status__connectaddress: "udp://your-server-domain.com:1212"
+        ROBUST_CVAR_hub__server_url: "ss14s://your-server-domain.com"
+        
+        # Discord Channel IDs (Optional)
+        ROBUST_CVAR_ooc__discord_channel_id: "YOUR_OOC_CHANNEL_ID"
+        ROBUST_CVAR_admin__chat_discord_channel_id: "YOUR_ADMIN_CHANNEL_ID"
+        
+        # Optional: Metrics and Replay Configuration
+        #ROBUST_CVAR_metrics__enabled: "1"
+        #ROBUST_CVAR_metrics__host: "*"
+        #ROBUST_CVAR_metrics__port: "9090"
+        #ROBUST_CVAR_replay__auto_record: "true"
+        #ROBUST_CVAR_replay__auto_record_temp_dir: "/replays-recording"
+        #ROBUST_CVAR_replay__auto_record_name: "server_{year}_{month}_{day}-{hour}_{minute}-round_{round}.zip"
+        #ROBUST_CVAR_replay__directory: "/replays-complete"
+
+AllowedHosts: "*"

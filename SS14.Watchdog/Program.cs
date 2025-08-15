@@ -23,7 +23,6 @@ namespace SS14.Watchdog
                     var env = context.HostingEnvironment;
                     builder.AddYamlFile("appsettings.yml", false);
                     builder.AddYamlFile($"appsettings.{env.EnvironmentName}.yml", true);
-                    builder.AddYamlFile("appsettings.Secret.yml", true);
                 })
                 .UseSerilog((ctx, cfg) =>
                 {
