@@ -33,7 +33,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Set working directory and create required directories with proper permissions
 WORKDIR /app
 RUN mkdir -p data instances logs config && \
-    chown -R watchdog:watchdog /app && \
     chmod -R 775 /app
 
 # Copy published application
