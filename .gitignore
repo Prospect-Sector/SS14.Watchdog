@@ -350,5 +350,5 @@ ASALocalRun/
 # MFractals generated code
 *.mfcractal
 .env
-appsettings.yml
 data.db*
+SS14.Watchdog/appsettings.yml
