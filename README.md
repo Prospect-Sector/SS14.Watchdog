@@ -21,7 +21,7 @@ This repository includes a complete Docker setup with Traefik reverse proxy supp
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/dvir001/SS14.Watchdog.git
+   git clone https://github.com/space-wizards/SS14.Watchdog.git
    cd SS14.Watchdog
    ```
 
