@@ -27,26 +27,22 @@ FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
 RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     ca-certificates \
+    curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Create non-root user for security
-RUN groupadd -r -g 1001 watchdog && \
-    useradd -r -g watchdog -u 1001 -m -d /app watchdog
-
-# Set working directory and create required directories
+# Set working directory and create required directories with proper permissions
 WORKDIR /app
 RUN mkdir -p data instances logs config && \
-    chown -R watchdog:watchdog /app
+    chown -R watchdog:watchdog /app && \
+    chmod -R 775 /app
 
 # Copy published application
 COPY --from=build --chown=watchdog:watchdog /app/publish ./
 
-# Switch to non-root user
-USER watchdog
-
 # Expose ports
-EXPOSE 5000
-EXPOSE 1212
+EXPOSE 8080/tcp
+EXPOSE 1212/tcp
+EXPOSE 1212/udp
 
 # Start the application
 ENTRYPOINT ["dotnet", "SS14.Watchdog.dll"]

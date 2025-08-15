@@ -2,31 +2,34 @@ services:
   ps-ss14-watchdog:
     build: .
     container_name: ${WATCHDOG_CONTAINER_NAME}
-    hostname: PS-SS14-Watchdog
+    hostname: ${WATCHDOG_HOSTNAME}
     volumes:
       - ${WATCHDOG_INSTANCES_PATH}:/app/instances
       - ${WATCHDOG_APPSETTINGS_PATH}:/app/appsettings.yml:ro
+    ports:
+      - "${API_PORT}:${API_PORT}/tcp"
+      - "${API_PORT}:${API_PORT}/udp"
     environment:
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
-      - ASPNETCORE_URLS=${ASPNETCORE_URLS}
     restart: unless-stopped
     networks:
-      - ${INTERNAL_NETWORK}
-      - ${EXTERNAL_NETWORK}
+      - internal
+      - external
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.ps-ss14-watchdog.tls.certresolver=${TRAEFIK_CERT_RESOLVER}"
-      - "traefik.http.routers.ps-ss14-watchdog.rule=Host(`${TRAEFIK_DOMAIN}`)"
-      - "traefik.http.routers.ps-ss14-watchdog.entrypoints=${TRAEFIK_ENTRYPOINT}"
-      - "traefik.http.routers.ps-ss14-watchdog.tls=true"
-      - "traefik.http.routers.ps-ss14-watchdog.middlewares=${TRAEFIK_MIDDLEWARE}"
-      - "traefik.http.services.ps-ss14-watchdog.loadbalancer.server.port=${PORT}"
+      - "traefik.http.routers.${WATCHDOG_CONTAINER_NAME}.tls.certresolver=${TRAEFIK_CERT_RESOLVER}"
+      - "traefik.http.routers.${WATCHDOG_CONTAINER_NAME}.rule=Host(`${TRAEFIK_DOMAIN}`)"
+      - "traefik.http.routers.${WATCHDOG_CONTAINER_NAME}.entrypoints=${TRAEFIK_ENTRYPOINT}"
+      - "traefik.http.routers.${WATCHDOG_CONTAINER_NAME}.tls=true"
+      - "traefik.http.routers.${WATCHDOG_CONTAINER_NAME}.middlewares=${TRAEFIK_MIDDLEWARE}"
+      - "traefik.http.services.${WATCHDOG_CONTAINER_NAME}.loadbalancer.server.port=${PORT}"
       - "traefik.docker.network=${EXTERNAL_NETWORK}"
 
 networks:
-  ps-ss14:
+  internal:
     driver: bridge
     name: ${INTERNAL_NETWORK}
-  traefik_lan:
+  external:
     external: true
+    name: ${EXTERNAL_NETWORK}
 
