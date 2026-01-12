@@ -227,8 +227,15 @@ public sealed partial class ServerInstance
 
     private Task RunCommandServerPing(CommandServerPing ping, CancellationToken cancel)
     {
+        var isFirstPing = _lastPing == null;
         _logger.LogTrace("Received ping from server.");
         _lastPing = DateTime.Now;
+
+        if (isFirstPing)
+        {
+            _logger.LogInformation("{Key} started successfully and is now running.", Key);
+            _notificationManager.SendNotification($"Server `{Key}` started successfully and is now running.");
+        }
 
         StartTimeoutTimer();
 
