@@ -1,5 +1,5 @@
-# Build stage - Use .NET 9.0 SDK
-FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+# Build stage - Use .NET 10.0 SDK
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
 
 # Copy solution and project files for dependency restore
@@ -20,8 +20,8 @@ RUN dotnet publish SS14.Watchdog/SS14.Watchdog.csproj \
     --no-restore \
     --self-contained false
 
-# Runtime stage - Use .NET 9.0 ASP.NET runtime
-FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
+# Runtime stage - Use .NET 10.0 ASP.NET runtime
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
 
 # Install required system packages
 RUN apt-get update && apt-get install -y --no-install-recommends \
